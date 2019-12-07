@@ -1,0 +1,34 @@
+{
+    "name": "kranovik/module-google-map",
+    "description": "N/A",
+    "require": {
+        "php": "~7.3.0||~7.4.0",
+        "magento/module-inventory-distance-based-source-selection": "*",
+        "magento/module-inventory-in-store-pickup-frontend": "*"
+    },
+    "type": "magento2-module",
+    "license": [
+        "OSL-3.0",
+        "AFL-3.0"
+    ],
+    "authors": [
+        {
+            "name": "Oleksandr Kravchuk",
+            "email": "swnsma@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Maksym Novik",
+            "email": "novik.kor@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Kranovik\\GoogleMap\\": ""
+        }
+    }
+}
