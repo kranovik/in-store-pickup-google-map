@@ -3,6 +3,9 @@ define([
     'Kranovik_GoogleMap/js/model/marker',
     'https://www.gstatic.com/charts/loader.js'
        ], function($, markerModel) {
+
+    let initialLocs = [];
+
     return {
         map: null,
         infoWindow: null,
@@ -10,7 +13,8 @@ define([
                             'data-bind="scope: \'pickup-location-info\'"' +
                             '><!-- ko template: getTemplate() --><!-- /ko --></div>',
         infoWindowId: '#info-window',
-        locations: [],
+        markers: [],
+
 
         /**
          * Init google map with Google Api Key for specific element.
@@ -27,11 +31,11 @@ define([
                         self.map = new google.maps.Map(element, {
                             zoom: 16
                         });
-                        if (self.locations.length > 0) {
-                            self.navigate(self.locations[0].getPosition());
-                            self.locations.forEach(function (loc) {
-                                loc.setMap(self.map);
-                            });
+
+                        if (initialLocs.length > 0) {
+                            self.navigate(initialLocs[0].latitude, initialLocs[0].longitude);
+                            self.setLocations(initialLocs);
+                            initialLocs = [];
                         }
                     }
                 });
@@ -51,22 +55,26 @@ define([
         },
 
         /**
-         * Create marker on the map for list of locations.
+         * Create marker on the map for list of markers.
          *
          * @param {Array} locations
          * @param {Function|null} callback
          */
         setLocations: function(locations, callback) {
             let self = this;
-            self.locations.forEach(function (marker) {
+            self.markers.forEach(function (marker) {
                 marker.setMap(null);
             });
 
-            self.locations = [];
+            self.markers = [];
 
-            locations.forEach(function (loc) {
-                self.addLocation(loc, callback)
-            });
+            if (self.map) {
+                locations.forEach(function (loc) {
+                    self.addLocation(loc, callback)
+                });
+            } else {
+                initialLocs = locations;
+            }
         },
 
         /**
@@ -78,7 +86,7 @@ define([
         addLocation: function(loc, callback) {
             let self = this;
 
-            if (!google.maps || self.locations[loc.pickup_location_code]) {
+            if (!google.maps || self.markers[loc.pickup_location_code]) {
                 return;
             }
 
@@ -94,7 +102,7 @@ define([
                 self.getInfoWindow().open(self.map, this);
             }.bind(marker));
 
-            self.locations[loc.pickup_location_code] = marker;
+            self.markers[loc.pickup_location_code] = marker;
         },
 
         /**

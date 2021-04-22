@@ -30,11 +30,13 @@ define([
             this.getPopup().openModal();
             googleMap.init(this.mapApiKey, $(this.mapElementSelector)[0]);
 
+            let query = null;
+
             if (shippingAddress.city && shippingAddress.postcode) {
-                this.updateNearbyLocations(
-                    shippingAddress.postcode + this.delimiter + country
-                );
+                query = shippingAddress.postcode + this.delimiter + country;
             }
+
+            this.updateNearbyLocations(query);
         },
 
         /**
@@ -55,17 +57,22 @@ define([
                 }
             });
 
+            let searchRequest = {
+                extensionAttributes: {
+                    productsInfo: productsInfo
+                },
+                pageSize: this.nearbySearchLimit
+            };
+
+            if (searchQuery) {
+                searchRequest.area = {
+                    radius: this.nearbySearchRadius,
+                        searchTerm: searchQuery
+                }
+            }
+
             return pickupLocationsService
-                .getNearbyLocations({
-                                        area: {
-                                            radius: this.nearbySearchRadius,
-                                            searchTerm: searchQuery
-                                        },
-                                        extensionAttributes: {
-                                            productsInfo: productsInfo
-                                        },
-                                        pageSize: this.nearbySearchLimit
-                                    })
+                .getNearbyLocations(searchRequest)
                 .then(function (locations) {
                     self.nearbyLocations(locations);
                 })

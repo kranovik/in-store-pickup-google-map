@@ -3,15 +3,15 @@ define([
        'ko',
        'underscore',
        'Kranovik_GoogleMap/js/model/marker',
-       'Magento_InventoryInStorePickupFrontend/js/model/pickup-locations-service'
-       ], function (Component, ko, _, markerModel, pickupLocationsService) {
+        'Kranovik_GoogleMap/js/model/current-location',
+], function (Component, ko, _, markerModel, currentPickupLocation) {
     'use strict';
 
     return Component.extend({
         defaults: {
             template: 'Kranovik_GoogleMap/map/pickup-location-info',
             marker: markerModel.getMarker(),
-            deliveryLocation: pickupLocationsService.selectedLocation,
+            deliveryLocation: currentPickupLocation.getActivePickupLocation(),
             location: null,
             isSelectedLocation: null
         },

@@ -1,9 +1,11 @@
 define([
     'Kranovik_GoogleMap/js/model/google-map',
+    'Kranovik_GoogleMap/js/model/current-location',
     'mage/utils/wrapper',
     'jquery'
 ], function (
     googleMap,
+    currentLocation,
     wrapper,
     $
 ) {
@@ -19,6 +21,7 @@ define([
         target.selectForShipping = wrapper.wrap(originalMethod, function (original, location) {
             googleMap.addLocation(location);
             googleMap.navigate(location.latitude, location.longitude);
+            currentLocation.setActivePickupLocation(location);
 
             return original(location);
         });
